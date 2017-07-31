@@ -1,15 +1,29 @@
 from heapq import heappush, heappop
-assignments = []
-rows = 'ABCDEFGHI'
-cols = '123456789'
 
-boxes = cross(rows, cols)
-row_units = [cross(r, cols) for r in rows]
-column_units = [cross(rows, c) for c in cols]
-square_units = [cross(rs, cs) for rs in ('ABC','DEF','GHI') for cs in ('123','456','789')]
-unitlist = row_units + column_units + square_units
-units = dict((s, [u for u in unitlist if s in u]) for s in boxes)
-peers = dict((s, set(sum(units[s],[]))-set([s])) for s in boxes)
+
+assignments = []
+
+
+# lambda function for extrapolating diagonals
+parallel_concat = lambda x, y: [''.join(tup) for tup in zip(x, y)]
+# cross product of elements in A and elements in B.
+cross = lambda A, B: [a + b for a in A for b in B]
+
+ROWS = 'ABCDEFGHI'
+COLS = DIGITS = '123456789'
+
+BOXES = cross(ROWS, COLS)
+ROW_UNITS = [cross(r, COLS) for r in ROWS]
+COLUMN_UNITS = [cross(ROWS, c) for c in COLS]
+SQUARE_UNITS = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI')
+                for cs in ('123', '456', '789')]
+DIAG_UNITS = [parallel_concat(ROWS, COLS),
+              parallel_concat(reversed(ROWS), COLS)]
+
+UNITLIST = ROW_UNITS + COLUMN_UNITS + SQUARE_UNITS + DIAG_UNITS
+UNITS = dict((s, [u for u in UNITLIST if s in u]) for s in BOXES)
+PEERS = dict((s, set(sum(UNITS[s], []))-set([s])) for s in BOXES)
+
 
 def assign_value(values, box, value):
     """
@@ -17,7 +31,7 @@ def assign_value(values, box, value):
     Assigns a value to a given box. If it updates the board record it.
     """
 
-    # Don't waste memory appending actions that don't actually change any values
+    # Don't waste memory appending actions that don't change any values
     if values[box] == value:
         return values
 
@@ -38,11 +52,7 @@ def naked_twins(values):
 
     # Find all instances of naked twins
     # Eliminate the naked twins as possibilities for their peers
-
-
-def cross(A, B):
-    "Cross product of elements in A and elements in B."
-    return [a + b for a in A for b in B]
+    pass
 
 
 def grid_values(grid):
@@ -53,7 +63,8 @@ def grid_values(grid):
     Returns:
         A grid in dictionary form
             Keys: The boxes, e.g., 'A1'
-            Values: The value in each box, e.g., '8'. If the box has no value, then the value will be '123456789'.
+            Values: The value in each box, e.g., '8'. If the box has no value,
+                    then the value will be '123456789'.
     """
     # remove all whitespace, \t and \n inclusive
     grid = grid.join(grid.split())
@@ -61,15 +72,13 @@ def grid_values(grid):
     assert len(grid) == 81, "Sudoku grid is an invalid length"
 
     # process string into dict
-    # initialize all boxes to empty, represented as '.'
-    values = {box: '123456789' for box in boxes}
+    values = {box: grid[index] if grid[index] in DIGITS else
+              DIGITS for index, box in enumerate(BOXES)}
 
-    for i, row in enumerate(row_units):
-        for box in row:
-            assert box[1].isdigit()
-            character_index = int(box[1]) + 9*i - 1
-            if grid[character_index].isdigit():
-                values[box] = grid[character_index]
+    # for index, box in enumerate(boxes):
+    #     updated_value = grid[index] if grid[index] in valid_digits \
+    #             else valid_digits
+    #     values = assign_value(values, box, updated_value)
 
     return values
 
@@ -80,12 +89,13 @@ def display(values):
     Args:
         values(dict): The sudoku in dictionary form
     """
-    width = 1+max(len(values[s]) for s in boxes)
+    width = 1+max(len(values[s]) for s in BOXES)
     line = '+'.join(['-'*(width*3)]*3)
-    for r in rows:
-        print(''.join(values[r+c].center(width)+('|' if c in '36' else '')
-                      for c in cols))
-        if r in 'CF': print(line)
+    for row in ROWS:
+        print(''.join(values[row+col].center(width) +
+                      ('|' if col in '36' else '') for col in COLS))
+        if row in 'CF':
+            print(line)
     return
 
 
@@ -100,8 +110,9 @@ def eliminate(values):
     Returns:
         Resulting Sudoku in dictionary form after eliminating values.
     """
-    for box, box_values in values.items():
-        if len(box_values) == 1:
+    for box, value in values.items():
+        if len(value) == 1:
+            values = assign_value(values, box, value)
             values = remove_peer_choice(box, values)
     return values
 
@@ -112,9 +123,10 @@ def remove_peer_choice(box, values):
     Input: String referring to a box, Sudoku in dictionary form.
     Output: Resulting Sudoku in dictionary form after removal.
     """
-    for peer in peers[box]:
+    for peer in PEERS[box]:
         if values[box] in values[peer]:
-            values[peer] = values[peer].replace(values[box], "")
+            updated_peer_value = values[peer].replace(values[box], "")
+            values = assign_value(values, peer, updated_peer_value)
     return values
 
 
@@ -127,11 +139,12 @@ def only_choice(values):
     Input: Sudoku in dictionary form.
     Output: Resulting Sudoku in dictionary form after filling in only choices.
     """
-    for unit in unitlist:
-        for digit in '123456789':
+    for unit in UNITLIST:
+        for digit in DIGITS:
             dplaces = [box for box in unit if digit in values[box]]
             if len(dplaces) == 1:
-                values[dplaces[0]] = digit
+                digit_box = dplaces[0]
+                values = assign_value(values, digit_box, digit)
     return values
 
 
@@ -167,7 +180,7 @@ def search(values):
 
     # Choose one of the unfilled squares with the fewest possibilities
     heap = []
-    box_space = [box for box in boxes if len(values[box]) > 1]
+    box_space = [box for box in BOXES if len(values[box]) > 1]
 
     if not box_space:
         return values
