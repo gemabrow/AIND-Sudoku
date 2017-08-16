@@ -1,9 +1,35 @@
 # Artificial Intelligence Nanodegree
 ## Introductory Project: Diagonal Sudoku Solver
 
+With this project, we provide a method for solving sudokus utilizing the
+naked twin strategy and include the additional constraints required by
+diagonal sudoku puzzles. Our approach regards sudoku puzzles
+as an instance of a Constraint Propagation Problem (CSP) and .
+
+Utilizing constraint propagation requires that we state the constraint(s) 
+followed by reducing the search space by identifying the range of values 
+that are still valid for a given domain.
+
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: In our case, our domain is all of the boxes within the Sudoku puzzle, and
+the range for each box is the set of digits from one to nine, inclusive, that
+are valid for that space. We begin by examining each unit, where a unit is
+a 3x3 square, a row, or a column of boxes in the sudoku puzzle. The local 
+constraint for a given unit -- as it applies to the naked twins strategy -- is
+such that, for any pair of boxes within a unit whose range are both identical
+and have a cardinality of 2, the possible values for the naked twins are
+eliminated from all other boxes the naked twins are unit members of.
+
+Our solution first iterates over all boxes within the puzzle. Any boxes
+with only two possible values are then added to a `viable_twins` list. After
+all boxes have been examined with the constraint of having only two possible
+values, we then examine each primary box within the list of `viable_twins` 
+against a seconday box pulled from its "peers" (boxes belonging to units of
+which the primary box is also a member) using set equality. These matches
+are appended to a list `actual_twins`.
+
+
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
@@ -15,6 +41,9 @@ This project requires **Python 3**.
 
 We recommend students install [Anaconda](https://www.continuum.io/downloads), a pre-packaged Python distribution that contains all of the necessary libraries and software for this project. 
 Please try using the environment we provided in the Anaconda lesson of the Nanodegree.
+
+From the provided environment, run
+'python solution_test.py'
 
 ##### Optional: Pygame
 
