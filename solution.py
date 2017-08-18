@@ -76,13 +76,14 @@ def naked_twins(values):
     for pair in actual_twins:
         primary_box = pair[0]
         secondary_box = pair[1]
+        twins = set(pair)
         twin_vals = set(values[primary_box])
         primary_peers = set(PEERS[primary_box])
         secondary_peers = set(PEERS[secondary_box])
-        joint_peers = primary_peers & secondary_peers
-
+        joint_peers = primary_peers | secondary_peers
+        
         for peer in joint_peers:
-            if len(values[peer]) > 2:
+            if peer not in twins and len(values[peer]) > 1:
                 updated_peer_value = ''.join(c for c in values[peer]
                                              if c not in twin_vals)
                 values = assign_value(values, peer, updated_peer_value)
