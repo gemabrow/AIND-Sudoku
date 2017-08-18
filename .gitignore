@@ -1,3 +1,6 @@
+.*
+*.zip
+*.json
 function.py
 .DS_Store
 __pycache__

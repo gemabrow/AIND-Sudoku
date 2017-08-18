@@ -25,7 +25,6 @@ UNITLIST = ROW_UNITS + COLUMN_UNITS + SQUARE_UNITS + DIAGONAL_UNITS
 UNITS = dict((s, [u for u in UNITLIST if s in u]) for s in BOXES)
 PEERS = dict((s, set(sum(UNITS[s], []))-set([s])) for s in BOXES)
 
-
 def assign_value(values, box, value):
     """
     Assigns a value to a given box. If it updates the board record it.
@@ -80,7 +79,7 @@ def naked_twins(values):
         twin_vals = set(values[primary_box])
         primary_peers = set(PEERS[primary_box])
         secondary_peers = set(PEERS[secondary_box])
-        joint_peers = primary_peers | secondary_peers
+        joint_peers = primary_peers & secondary_peers
         
         for peer in joint_peers:
             if peer not in twins and len(values[peer]) > 1:
@@ -219,7 +218,6 @@ def search(values):
         attempt = search(temp_sudoku)
         if attempt:
             return attempt
-
     return
 
 
