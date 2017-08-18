@@ -79,8 +79,12 @@ and software for this project. Please try using the environment provided in the
 Anaconda lesson of Udacity's AI Nanodegree.
 
 From the provided environment, run
-`python solution_test.py`
+```
+python solution_test.py
+```
 
 If you'd like to see a visualization, download 
 Pygame [here](http://www.pygame.org/download.shtml), then run
-`python solution.py`
+```
+python solution.py
+```

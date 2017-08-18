@@ -47,9 +47,9 @@ def remove_from_peers(box, values):
     Output: Resulting Sudoku in dictionary form after removal.
     """
     for peer in PEERS[box]:
+        # iterate over digits individually and remove from each peer 
         for digit in values[box]:
             if digit in values[peer]:
-                # TO-DO: Use regex replace here, instead
                 updated_peer_value = values[peer].replace(digit, "")
                 values = assign_value(values, peer, updated_peer_value)
     return values
@@ -66,8 +66,12 @@ def naked_twins(values):
         the values dictionary with the naked twins eliminated from peers.
     """
     # Create the list of naked twins
+    # start with all boxes with only two valid values
     viable_twins = [box for box in values.keys() if len(values[box]) == 2]
-    actual_twins = [(primary_box, secondary_box) for primary_box in viable_twins
+    # use set equality on peers of viable_twins
+    # to find legitimate naked twins
+    actual_twins = [(primary_box, secondary_box)
+                    for primary_box in viable_twins
                     for secondary_box in PEERS[primary_box]
                     if set(values[primary_box]) == set(values[secondary_box])]
 
@@ -77,17 +81,20 @@ def naked_twins(values):
         secondary_box = pair[1]
         twins = set(pair)
         twin_vals = set(values[primary_box])
+        # use set intersection to identify invalidated peers of twins
         primary_peers = set(PEERS[primary_box])
         secondary_peers = set(PEERS[secondary_box])
-        joint_peers = primary_peers & secondary_peers
-        
-        for peer in joint_peers:
-            if peer not in twins and len(values[peer]) > 1:
+        target_peers = primary_peers & secondary_peers
+        # remove twin values from the intersection of twins peers
+        for peer in target_peers:
+            # precaution to not overwrite values of twins
+            if peer not in twins:
                 updated_peer_value = ''.join(c for c in values[peer]
                                              if c not in twin_vals)
                 values = assign_value(values, peer, updated_peer_value)
 
     return values
+
 
 def grid_values(grid):
     """
@@ -160,9 +167,10 @@ def only_choice(values):
     """
     for unit in UNITLIST:
         for digit in DIGITS:
-            # list of boxes in unit where digit can validly be placed 
+            # list of boxes in unit where digit can validly be placed
             dplaces = [box for box in unit if digit in values[box]]
             if len(dplaces) == 1:
+                # digit can only go in one box, so use box at head of list
                 digit_box = dplaces[0]
                 values = assign_value(values, digit_box, digit)
     return values
@@ -172,14 +180,15 @@ def reduce_puzzle(values):
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
-        solved_values_before = len([box for box, value in values.items() if len(value) == 1])
+        solved_values_before = len([box for box, value in values.items()
+                                    if len(value) == 1])
 
         values = eliminate(values)
         values = only_choice(values)
         values = naked_twins(values)
-        
         # Check how many boxes have a determined value, to compare
-        solved_values_after = len([box for box, value in values.items() if len(value) == 1])
+        solved_values_after = len([box for box, value in values.items()
+                                   if len(value) == 1])
         # If no new values were added, stop the loop.
         stalled = solved_values_before == solved_values_after
         # Return False if there is a box with zero available values:
@@ -205,7 +214,7 @@ def search(values):
     if not box_space:
         return values
     # otherwise, push boxes onto min heap
-    # key value for heap property is num of valid digits for a box 
+    # key value for heap property is num of valid digits for a box
     for box in box_space:
         heappush(min_heap, (len(values[box]), box))
 
