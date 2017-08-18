@@ -77,13 +77,13 @@ def naked_twins(values):
 
     # Remove each pair of naked twins' values from that pair's peers
     for pair in actual_twins:
-        primary_box = pair[0]
-        secondary_box = pair[1]
+        twin_0 = pair[0]
+        twin_1 = pair[1]
         twins = set(pair)
-        twin_vals = set(values[primary_box])
+        twin_vals = set(values[twin_0])
         # use set intersection to identify invalidated peers of twins
-        primary_peers = set(PEERS[primary_box])
-        secondary_peers = set(PEERS[secondary_box])
+        primary_peers = set(PEERS[twin_0])
+        secondary_peers = set(PEERS[twin_1])
         target_peers = primary_peers & secondary_peers
         # remove twin values from the intersection of twins peers
         for peer in target_peers:
@@ -165,14 +165,15 @@ def only_choice(values):
     Input: Sudoku in dictionary form.
     Output: Resulting Sudoku in dictionary form after filling in only choices.
     """
+    # Solution from 6. Strategy 2: Only Choice referenced 
     for unit in UNITLIST:
         for digit in DIGITS:
             # list of boxes in unit where digit can validly be placed
             dplaces = [box for box in unit if digit in values[box]]
             if len(dplaces) == 1:
                 # digit can only go in one box, so use box at head of list
-                digit_box = dplaces[0]
-                values = assign_value(values, digit_box, digit)
+                only_box = dplaces[0]
+                values = assign_value(values, only_box, digit)
     return values
 
 
