@@ -22,7 +22,7 @@ Q: How do we use constraint propagation to solve the naked twins problem?
 
 A: We begin by examining each unit, where a unit is
 a 3x3 square, a row, or a column of boxes in the sudoku puzzle. The local 
-constraint for a given unit -- as it applies to the naked twins strategy -- is
+constraint for a given unit &mdash; as it applies to the naked twins strategy -- is
 such that, for any pair of boxes within a unit whose range are both identical
 and have a cardinality of 2, the possible values for the naked twins are
 eliminated from all other boxes the naked twins are unit members of.
