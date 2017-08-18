@@ -1,6 +1,9 @@
 # Artificial Intelligence Nanodegree
 ## Introductory Project: Diagonal Sudoku Solver
 
+[1]: ./images/naked-twins.png
+[2]: ./images/naked-twins-2.png
+
 With this project, we provide a method for solving sudokus utilizing the
 naked twin strategy and include the additional constraints required by
 diagonal sudoku puzzles. Our approach regards sudoku puzzles
@@ -24,7 +27,7 @@ such that, for any pair of boxes within a unit whose range are both identical
 and have a cardinality of 2, the possible values for the naked twins are
 eliminated from all other boxes the naked twins are unit members of.
 
-![](./images/naked-twins.png) | ![](./images/naked-twins-2.png)
+![Naked Twins: Pre-Constraint Propagation][1] | ![Post-Constraint Propagation][2]
 
 Our solution first iterates over all boxes within the puzzle. Any boxes
 with only two possible values are then added to a `viable_twins` list. After
