@@ -7,7 +7,8 @@
 With this project, we provide a method for solving sudokus utilizing the
 naked twin strategy and include the additional constraints required by
 diagonal sudoku puzzles. Our approach regards sudoku puzzles
-as an instance of a Constraint Propagation Problem (CSP) and .
+as an instance of a Constraint Propagation Problem (CSP) and approaches them
+as such.
 
 Utilizing constraint propagation requires that we state the constraint(s) 
 followed by reducing the search space by identifying the range of values 
