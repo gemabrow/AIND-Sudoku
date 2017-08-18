@@ -27,11 +27,9 @@ such that, for any pair of boxes within a unit whose range are both identical
 and have a cardinality of 2, the possible values for the naked twins are
 eliminated from all other boxes the naked twins are unit members of.
 
-<p align="center">
 Pre-Constraint Propagation | Post-Constraint Propagation 
 ----- | -------
 ![NT: Pre-Constraint Propagation][1] | ![NT: Post-Constraint Propagation][2]
-</p>
 
 Our solution first iterates over all boxes within the puzzle. Any boxes
 with only two possible values are then added to a `viable_twins` list. After
