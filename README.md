@@ -22,22 +22,22 @@ Q: How do we use constraint propagation to solve the naked twins problem?
 
 A: We begin by examining each unit, where a unit is
 a 3x3 square, a row, or a column of boxes in the sudoku puzzle. The local 
-constraint for a given unit &mdash; as it applies to the naked twins strategy -- is
-such that, for any pair of boxes within a unit whose range are both identical
-and have a cardinality of 2, the possible values for the naked twins are
-eliminated from all other boxes the naked twins are unit members of.
+constraint for a given unit &mdash; as it applies to the naked twins strategy
+&mdash; is such that, for any pair of boxes within a unit whose range are both
+identical and have a cardinality of 2, the possible values for the naked twins
+are eliminated from all other boxes the naked twins are unit members of.
 
 Pre-Constraint Propagation | Post-Constraint Propagation 
 ----- | -------
 ![NT: Pre-Constraint Propagation][1] | ![NT: Post-Constraint Propagation][2]
 
 Our solution first iterates over all boxes within the puzzle. Any boxes
-with only two possible values are then added to a `viable_twins` list. After
+with only two possible values are then added to the `viable_twins` list. After
 all boxes have been examined meeting the constraint of having only two possible
 values, we then examine each primary box within the list of `viable_twins` 
 against a seconday box pulled from its "peers" (boxes belonging to units of
 which the primary box is also a member) using set equality. These matches
-are appended to a list `actual_twins`.
+are appended to the `actual_twins` list.
 
 For each pair of boxes within `actual_twins`, we form a set representing the
 shared values of the twins `twin_vals`, and create a superset `joint_peers`
@@ -65,35 +65,26 @@ DIAGONAL_UNITS = [parallel_concat(ROWS, COLS),
 UNITLIST = ROW_UNITS + COLUMN_UNITS + SQUARE_UNITS + DIAGONAL_UNITS
 ```
 
+The constraints previously applied to all units within the unit list are then
+applied to the diagonal units, as well. This includes, but is not limited to,
+the previously mentioned naked twins strategy.
 
 ### Install
 
 This project requires **Python 3**.
 
-We recommend students install [Anaconda](https://www.continuum.io/downloads), a pre-packaged Python distribution that contains all of the necessary libraries and software for this project. 
-Please try using the environment we provided in the Anaconda lesson of the Nanodegree.
+It is recommended to install [Anaconda](https://www.continuum.io/downloads), a pre-packaged Python distribution that contains all of the necessary libraries and software for this project. 
+Please try using the environment provided in the Anaconda lesson of Udacity's
+AI Nanodegree.
 
 From the provided environment, run
 'python solution_test.py'
 
-##### Optional: Pygame
+If you'd like to see a visualization, download 
+Pygame [here](http://www.pygame.org/download.shtml), then run
+'python solution.py'
 
-Optionally, you can also install pygame if you want to see your visualization. If you've followed our instructions for setting up our conda environment, you should be all set.
-
-If not, please see how to download pygame [here](http://www.pygame.org/download.shtml).
-
-### Code
-
-* `solution.py` - You'll fill this in as part of your solution.
-* `solution_test.py` - Do not modify this. You can test your solution by running `python solution_test.py`.
-* `PySudoku.py` - Do not modify this. This is code for visualizing your solution.
-* `visualize.py` - Do not modify this. This is code for visualizing your solution.
-
-### Visualizing
-
-To visualize your solution, please only assign values to the values_dict using the `assign_value` function provided in solution.py
-
-### Submission
+## Submission
 Before submitting your solution to a reviewer, you are required to submit your project to Udacity's Project Assistant, which will provide some initial feedback.  
 
 The setup is simple.  If you have not installed the client tool already, then you may do so with the command `pip install udacity-pa`.  
