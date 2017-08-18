@@ -73,9 +73,10 @@ the previously mentioned naked twins strategy.
 
 This project requires **Python 3**.
 
-It is recommended to install [Anaconda](https://www.continuum.io/downloads), a pre-packaged Python distribution that contains all of the necessary libraries and software for this project. 
-Please try using the environment provided in the Anaconda lesson of Udacity's
-AI Nanodegree.
+It is recommended to install [Anaconda](https://www.continuum.io/downloads), a
+pre-packaged Python distribution that contains all of the necessary libraries
+and software for this project. Please try using the environment provided in the
+Anaconda lesson of Udacity's AI Nanodegree.
 
 From the provided environment, run
 'python solution_test.py'
@@ -85,11 +86,19 @@ Pygame [here](http://www.pygame.org/download.shtml), then run
 'python solution.py'
 
 ## Submission
-Before submitting your solution to a reviewer, you are required to submit your project to Udacity's Project Assistant, which will provide some initial feedback.  
+Before submitting your solution to a reviewer, you are required to submit your
+project to Udacity's Project Assistant, which will provide some initial
+feedback.  
 
-The setup is simple.  If you have not installed the client tool already, then you may do so with the command `pip install udacity-pa`.  
+The setup is simple.  If you have not installed the client tool already, then
+you may do so with the command `pip install udacity-pa`.  
 
-To submit your code to the project assistant, run `udacity submit` from within the top-level directory of this project.  You will be prompted for a username and password.  If you login using google or facebook, visit [this link](https://project-assistant.udacity.com/auth_tokens/jwt_login) for alternate login instructions.
+To submit your code to the project assistant, run `udacity submit` from within
+the top-level directory of this project.  You will be prompted for a username 
+and password.  If you login using google or facebook, visit
+[this link](https://project-assistant.udacity.com/auth_tokens/jwt_login) for
+alternate login instructions.
 
-This process will create a zipfile in your top-level directory named sudoku-<id>.zip.  This is the file that you should submit to the Udacity reviews system.
-
+This process will create a zipfile in your top-level directory named
+sudoku-<id>.zip.  This is the file that you should submit to the Udacity
+reviews system.

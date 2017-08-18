@@ -8,10 +8,12 @@ parallel_concat = lambda x, y: [''.join(tup) for tup in zip(x, y)]
 # cross product of elements in A and elements in B.
 cross = lambda A, B: [a + b for a in A for b in B]
 
+# Sudoku board constants
 ROWS = 'ABCDEFGHI'
 COLS = DIGITS = '123456789'
 
 BOXES = cross(ROWS, COLS)
+# Building unitlist for rows, columns, squares, and diagonals
 ROW_UNITS = [cross(r, COLS) for r in ROWS]
 COLUMN_UNITS = [cross(ROWS, c) for c in COLS]
 SQUARE_UNITS = [cross(rs, cs) for rs in ('ABC', 'DEF', 'GHI')
@@ -26,7 +28,6 @@ PEERS = dict((s, set(sum(UNITS[s], []))-set([s])) for s in BOXES)
 
 def assign_value(values, box, value):
     """
-    Please use this function to update your values dictionary!
     Assigns a value to a given box. If it updates the board record it.
     """
 
@@ -65,42 +66,13 @@ def naked_twins(values):
     Returns:
         the values dictionary with the naked twins eliminated from peers.
     """
-
-    # Find all instances of naked twins
-    #for unit in UNITLIST:
-    #    for digit in DIGITS:
-    #        # create dict with keys being all digits > current digit
-    #        relatives = {str(other_digit): []
-    #                     for other_digit in range(int(digit)+1, 10)}
-    #        for box in unit:
-    #            if digit in values[box] and len(values[box]) == 2:
-    #                # get secondary digit from potential twin
-    #                #print(values[box], type(values[box][-1]))
-    #                other_digit = values[box][-1]
-    #                #print(box)
-    #                # add box to list of possible naked twins
-    #                if other_digit is not digit:
-    #                    relatives[other_digit].append(box)
-    #
-    #        for other_digit, boxes in relatives.items():
-    #            # naked twin found
-    #            if len(boxes) == 2:
-    #                primary_box = boxes[0] 
-    #                secondary_box = boxes[1] 
-    #                # remove naked twin values from peers of primary box
-    #                for box in boxes:
-    #                    print(box, ": ", values[box])
-    #                values = remove_from_peers(primary_box, values)
-    #                #print(primary_box, values[primary_box]) 
-    #                # reassign naked twin values to secondary box
-    #                values = assign_value(values, secondary_box, values[primary_box])
-    #                #print(secondary_box, values[secondary_box])
-    #return values
+    # Create the list of naked twins
     viable_twins = [box for box in values.keys() if len(values[box]) == 2]
     actual_twins = [(primary_box, secondary_box) for primary_box in viable_twins
                     for secondary_box in PEERS[primary_box]
                     if set(values[primary_box]) == set(values[secondary_box])]
 
+    # Remove each pair of naked twins' values from that pair's peers
     for pair in actual_twins:
         primary_box = pair[0]
         secondary_box = pair[1]
@@ -133,7 +105,8 @@ def grid_values(grid):
     # assert length of input is valid
     assert len(grid) == 81, "Sudoku grid is an invalid length"
 
-    # process string into dict
+    # process string into dict where '.' means all digits are valid
+    # otherwise, the given digit
     values = {box: grid[index] if grid[index] in DIGITS else DIGITS
               for index, box in enumerate(BOXES)}
 
@@ -187,6 +160,7 @@ def only_choice(values):
     """
     for unit in UNITLIST:
         for digit in DIGITS:
+            # list of boxes in unit where digit can validly be placed 
             dplaces = [box for box in unit if digit in values[box]]
             if len(dplaces) == 1:
                 digit_box = dplaces[0]
@@ -200,11 +174,8 @@ def reduce_puzzle(values):
         # Check how many boxes have a determined value
         solved_values_before = len([box for box, value in values.items() if len(value) == 1])
 
-        # Your code here: Use the Eliminate Strategy
         values = eliminate(values)
-        # Your code here: Use the Only Choice Strategy
         values = only_choice(values)
-        # Naked Twins strategy
         values = naked_twins(values)
         
         # Check how many boxes have a determined value, to compare
@@ -227,17 +198,20 @@ def search(values):
         return False
 
     # Choose one of the unfilled squares with the fewest possibilities
-    heap = []
+    min_heap = []
     box_space = [box for box in BOXES if len(values[box]) > 1]
 
+    # if no box space, all boxes are filled, so return
     if not box_space:
         return values
+    # otherwise, push boxes onto min heap
+    # key value for heap property is num of valid digits for a box 
     for box in box_space:
-        heappush(heap, (len(values[box]), box))
+        heappush(min_heap, (len(values[box]), box))
 
     # Now use recursion to solve each one of the resulting sudokus,
     # and if one returns a value (not False), return that answer!
-    _, temp_box = heappop(heap)
+    _, temp_box = heappop(min_heap)
     for value in values[temp_box]:
         temp_sudoku = values.copy()
         temp_sudoku[temp_box] = value
